@@ -1,5 +1,5 @@
 # Config variables
-find_program(cake cake)
+find_program(cake cake64)
 set(cake_flags "--stack_size=50 --heap_size=50" CACHE STRING "Arguments passed to the CakeML compiler")
 string(REGEX REPLACE "[ \t\r\n]+" ";" cakeflag_list "${cake_flags}")
 
