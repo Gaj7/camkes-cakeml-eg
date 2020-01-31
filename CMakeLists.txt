@@ -4,7 +4,7 @@ project(componentHello C)
 
 include("${CMAKE_CURRENT_LIST_DIR}/CakeMLHelper.cmake")
 
-declare_cakeml_component(Hello
+simple_cakeml_component(Hello
     CML_SOURCES src/hello.cml
     C_SOURCES src/main.c
 )
