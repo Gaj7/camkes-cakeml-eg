@@ -30,15 +30,16 @@ function(declare_cakeml_component name)
     endif()
 
     cat(${name}.cml ${PARSED_ARGS_CML_SOURCES})
+    set(abs_bin_prefix "${CMAKE_CURRENT_BINARY_DIR}/${name}")
     add_custom_command(
-        OUTPUT ${name}.cake.S
-        COMMAND ${cake} ${cakeflag_list} < ${name}.cml > ${name}.cake.S
-        COMMAND sed -i "s/cdecl(main)/cdecl(${PARSED_ARGS_CML_ENTRY_NAME})/g" ${name}.cake.S
-        DEPENDS ${name}.cml
+        OUTPUT ${abs_bin_prefix}.cake.S
+        COMMAND ${cake} ${cakeflag_list} < ${abs_bin_prefix}.cml > ${abs_bin_prefix}.cake.S
+        COMMAND sed -i "s/cdecl(main)/cdecl(${PARSED_ARGS_CML_ENTRY_NAME})/g" ${abs_bin_prefix}.cake.S
+        DEPENDS ${abs_bin_prefix}.cml
         VERBATIM
     )
     DeclareCAmkESComponent(${name}
-        SOURCES ${PARSED_ARGS_C_SOURCES} ${name}.cake.S
+        SOURCES ${PARSED_ARGS_C_SOURCES} ${abs_bin_prefix}.cake.S
         LIBS camkescakeml
     )
 endfunction(declare_cakeml_component)
@@ -46,14 +47,15 @@ endfunction(declare_cakeml_component)
 # Concatenates files with unix "cat" program
 # Assumes filepaths are relative
 function(cat name file)
+    set(abs_name "${CMAKE_CURRENT_BINARY_DIR}/${name}")
     foreach(filepath ${file} ${ARGN})
-        list(APPEND relative_files "${CMAKE_CURRENT_SOURCE_DIR}/${filepath}")
+        list(APPEND abs_files "${CMAKE_CURRENT_LIST_DIR}/${filepath}")
     endforeach(filepath)
 
     add_custom_command(
-        OUTPUT ${name}
-        COMMAND cat ${relative_files} > ${name}
-        DEPENDS ${relative_files}
+        OUTPUT ${abs_name}
+        COMMAND cat ${abs_Files} > ${abs_name}
+        DEPENDS ${abs_files}
     )
-    set_source_files_properties(${name} PROPERTIES GENERATED TRUE)
+    set_source_files_properties(${abs_name} PROPERTIES GENERATED TRUE)
 endfunction(cat)
