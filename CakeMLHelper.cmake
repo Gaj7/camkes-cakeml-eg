@@ -1,5 +1,6 @@
 # Config variables
-find_program(cake cake64)
+find_program(cake64 cake64)
+find_program(cake32 cake32)
 set(cake_flags "--stack_size=50 --heap_size=50" CACHE STRING "Arguments passed to the CakeML compiler")
 string(REGEX REPLACE "[ \t\r\n]+" ";" cakeflag_list "${cake_flags}")
 
@@ -27,6 +28,20 @@ function(declare_cakeml_component name)
     endif()
     if("${PARSED_ARGS_CML_ENTRY_NAME}" STREQUAL "")
         set(PARSED_ARGS_CML_ENTRY_NAME "cml_entry")
+    endif()
+
+    if("${KernelSel4Arch}" STREQUAL "aarch32")
+        if("${cake32}" STREQUAL "cake32-NOTFOUND")
+            message(FATAL_ERROR "Could not find a 32-bit targeting CakeML compiler. Please ensure cake32 is on the system path.")
+        endif()
+        set(cake ${cake32})
+    elseif("${KernelSel4Arch}" STREQUAL "x86_64")
+        if("${cake64}" STREQUAL "cake64-NOTFOUND")
+            message(FATAL_ERROR "Could not find a 64-bit targeting CakeML compiler. Please ensure cake64 is on the system path.")
+        endif()
+        set(cake ${cake64})
+    else()
+        message(FATAL_ERROR "No CakeML compiler support for architecture ${KernelSel4Arch}")
     endif()
 
     cat(${name}.cml ${PARSED_ARGS_CML_SOURCES})
