@@ -24,7 +24,7 @@ function(build_cake name)
         message(FATAL_ERROR "Must provide at least one CakeML source file to build_cake")
     endif()
     if("${PARSED_ARGS_ENTRY_NAME}" STREQUAL "")
-        set(PARSED_ARGS_ENTRY_NAME "cml_entry")
+        set(PARSED_ARGS_ENTRY_NAME "run")
     endif()
 
     if("${KernelSel4Arch}" STREQUAL "aarch32")
